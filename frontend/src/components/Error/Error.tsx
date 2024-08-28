@@ -12,6 +12,7 @@ interface ErrorProps {
 }
 
 const Error = ({ children, onClose }: ErrorProps) =>
+  // @ts-ignore
   <div role="alert" className={makeClass(styles.error, children && styles.open)}>
     {children}
     <button

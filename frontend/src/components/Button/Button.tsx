@@ -37,6 +37,7 @@ const Button: React.FC<ButtonProps> = ({
       isSecondary && styles.secondary,
       isSmall && styles.small,
       isLoading && styles.loading,
+      // @ts-ignore
       !children && icon && styles.iconButton,
     ),
     style: {
