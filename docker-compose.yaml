@@ -17,7 +17,7 @@ services:
     user: 1000:1000
     volumes:
       - ./frontend:/app
-    command: ['sh', '-c', 'npm i && npm run dev']
+    command: ['sh', '-c', 'yarn install && yarn run dev']
     ports:
       - 1234:1234
     environment:
