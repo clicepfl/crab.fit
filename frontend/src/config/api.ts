@@ -8,8 +8,8 @@ if (process.env.NEXT_PUBLIC_API_URL === undefined) {
 
 const API_BASE =
   typeof window === 'undefined'
-    ? new URL(process.env.API_URL || process.env.NEXT_PUBLIC_API_URL)
-    : new URL(process.env.NEXT_PUBLIC_API_URL)
+    ? process.env.API_URL || process.env.NEXT_PUBLIC_API_URL
+    : process.env.NEXT_PUBLIC_API_URL
 
 export const EventInput = z.object({
   name: z.string().optional(),
@@ -47,7 +47,7 @@ export const StatsResponse = z.object({
 export type StatsResponse = z.infer<typeof StatsResponse>
 
 const get = async <S extends z.Schema>(url: string, schema: S, auth?: string, nextOptions?: NextFetchRequestConfig): Promise<ReturnType<S['parse']>> => {
-  const res = await fetch(new URL(url, API_BASE), {
+  const res = await fetch(API_BASE + url, {
     headers: {
       ...auth && { Authorization: `Bearer ${auth}` },
     },
@@ -59,7 +59,7 @@ const get = async <S extends z.Schema>(url: string, schema: S, auth?: string, ne
 }
 
 const post = async <S extends z.Schema>(url: string, schema: S, input: unknown, auth?: string, method = 'POST'): Promise<ReturnType<S['parse']>> => {
-  const res = await fetch(new URL(url, API_BASE), {
+  const res = await fetch(API_BASE + url, {
     method,
     headers: {
       'Content-Type': 'application/json',
