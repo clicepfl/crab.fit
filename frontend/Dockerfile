@@ -15,7 +15,7 @@ RUN yarn run build
 RUN chown -R node .
 USER node
 
-ENV NEXT_PUBLIC_API_URL=https://clic.epfl.ch/crabfit-api
+ENV NEXT_PUBLIC_API_URL=https://clic.epfl.ch/crabfit/api
 ENV NEXT_PUBLIC_FRONTEND_URL=https://clic.epfl.ch/crabfit
 
 CMD [ "yarn", "run", "start" ]
