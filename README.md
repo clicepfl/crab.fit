@@ -1,7 +1,10 @@
-# Crab Fit <img width="100" align="right" src="frontend/src/res/logo.svg" alt="avatar">
+# Crab CLIC <img width="100" align="right" src="frontend/src/res/logo.svg" alt="avatar">
 
 [![Frontend Checks](https://github.com/GRA0007/crab.fit/actions/workflows/check_frontend.yml/badge.svg)](https://github.com/GRA0007/crab.fit/actions/workflows/check_frontend.yml)
 [![API Checks](https://github.com/GRA0007/crab.fit/actions/workflows/check_api.yml/badge.svg)](https://github.com/GRA0007/crab.fit/actions/workflows/check_api.yml)
+
+
+This is a fork of [Crab.fit](https://github.com/GRA0007/crab.fit) from [Ben Grant](https://bengrant.dev/).
 
 Align your schedules to find the perfect time that works for everyone.
 Open-source and licensed under the [GNU GPLv3](./LICENSE).
