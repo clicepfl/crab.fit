@@ -5,7 +5,7 @@
   "manifest_version": 2,
 
   "author": "Ben Grant",
-  "homepage_url": "https://crab.fit",
+  "homepage_url": "https://clic.epfl.ch/crabfit",
 
   "browser_action": {
     "default_popup": "popup.html",

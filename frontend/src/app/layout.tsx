@@ -13,7 +13,7 @@ import './global.css'
 const karla = Karla({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://crab.fit'),
+  metadataBase: new URL('https://clic.epfl.ch/crabfit'),
   title: {
     absolute: 'Crab Fit',
     template: '%s - Crab Fit',
