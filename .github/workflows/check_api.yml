@@ -2,15 +2,9 @@ name: API Checks
 
 on:
   pull_request:
-    paths:
-      - api/**
-      - .github/workflows/check_api.yml
   push:
     branches:
       - main
-    paths:
-      - api/**
-      - .github/workflows/check_api.yml
 
 # Fail on warnings
 env:

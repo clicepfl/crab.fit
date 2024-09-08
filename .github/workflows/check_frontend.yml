@@ -2,17 +2,9 @@ name: Frontend Checks
 
 on:
   pull_request:
-    paths:
-      - frontend/**
-      - .github/workflows/check_frontend.yml
-      - '!frontend/src/i18n/locales/**'
   push:
     branches:
       - main
-    paths:
-      - frontend/**
-      - .github/workflows/check_frontend.yml
-      - '!frontend/src/i18n/locales/**'
 
 jobs:
   lint:
