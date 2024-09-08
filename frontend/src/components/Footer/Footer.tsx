@@ -9,7 +9,7 @@ interface FooterProps {
 const Footer = async ({ isSmall }: FooterProps) => {
   return <footer className={makeClass(styles.footer, isSmall && styles.small)}>
     <p>
-      Based on <a href="https://github.com/GRA0007/crab.fit">Crab Fit</a> from <a href="https://bengrant.dev/"> Ben Grant</a> for custom style and content of pages. 
+      Based on <a href="https://github.com/GRA0007/crab.fit">Crab Fit</a> from <a href="https://bengrant.dev/"> Ben Grant</a>. 
       CLIC repo is available <a href="https://github.com/clicepfl/crab.fit">here</a>.
     </p>
   </footer>
