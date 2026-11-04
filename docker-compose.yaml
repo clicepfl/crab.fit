@@ -12,14 +12,12 @@ services:
 
   frontend:
     container_name: frontend
-    build:
-      context: frontend
-      dockerfile: Dockerfile.dev
+    image: node:26
     working_dir: /app
     user: 1000:1000
     volumes:
       - ./frontend:/app
-    command: ['sh', '-c', 'yarn install && yarn run dev']
+    command: ['sh', '-c', 'npm install && npm run dev']
     ports:
       - 1234:1234
     environment:
