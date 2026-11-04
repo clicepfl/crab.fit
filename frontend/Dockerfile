@@ -1,6 +1,6 @@
-FROM node:18-alpine
+FROM node:26-alpine
 
-RUN apk update
+RUN apk update && apk add yarn
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
