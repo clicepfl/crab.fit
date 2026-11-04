@@ -1,19 +1,17 @@
 use std::{env, net::SocketAddr, sync::Arc};
 
 use axum::{
-    error_handling::HandleErrorLayer,
     extract,
     http::{
         header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
         HeaderValue, Method,
     },
     routing::{get, patch, post},
-    BoxError, Router, Server,
+    Router,
 };
 use routes::*;
 use tokio::sync::Mutex;
-use tower::ServiceBuilder;
-use tower_governor::{errors::display_error, governor::GovernorConfigBuilder, GovernorLayer};
+use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer};
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 use tracing::Level;
 use utoipa::OpenApi;
@@ -69,14 +67,6 @@ async fn main() {
             .finish()
             .unwrap(),
     );
-    let rate_limit = ServiceBuilder::new()
-        // Handle errors from governor and convert into HTTP responses
-        .layer(HandleErrorLayer::new(|e: BoxError| async move {
-            display_error(e)
-        }))
-        .layer(GovernorLayer {
-            config: Box::leak(governor_config),
-        });
 
     let app = Router::new()
         .merge(SwaggerUi::new("/docs").url("/docs/openapi.json", ApiDoc::openapi()))
@@ -96,7 +86,7 @@ async fn main() {
         .route("/tasks/cleanup", get(tasks::cleanup))
         .with_state(shared_state)
         .layer(cors)
-        .layer(rate_limit)
+        .layer(GovernorLayer::new(governor_config))
         .layer(TraceLayer::new_for_http());
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
@@ -110,8 +100,10 @@ async fn main() {
             "release"
         }
     );
-    Server::bind(&addr)
-        .serve(app.into_make_service_with_connect_info::<SocketAddr>())
+
+    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+
+    axum::serve(listener, app)
         .with_graceful_shutdown(async {
             tokio::signal::ctrl_c()
                 .await

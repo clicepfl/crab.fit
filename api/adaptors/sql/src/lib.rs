@@ -1,4 +1,4 @@
-use std::{env, error::Error};
+use std::env;
 
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
@@ -6,7 +6,6 @@ use common::{Adaptor, Event, Person, Stats};
 use entity::{event, person, stats};
 use migration::{Migrator, MigratorTrait};
 use sea_orm::{
-    strum::Display,
     ActiveModelTrait,
     ActiveValue::{NotSet, Set},
     ColumnTrait, Database, DatabaseConnection, DbErr, EntityTrait, ModelTrait, QueryFilter,
@@ -189,16 +188,6 @@ impl SqlAdaptor {
         let db = Database::connect(&connection_string)
             .await
             .expect("Failed to connect to SQL database");
-        println!(
-            "{} Connected to database at {}",
-            match db {
-                DatabaseConnection::SqlxMySqlPoolConnection(_) => "🐬",
-                DatabaseConnection::SqlxPostgresPoolConnection(_) => "🐘",
-                DatabaseConnection::SqlxSqlitePoolConnection(_) => "🪶",
-                DatabaseConnection::Disconnected => panic!("Failed to connect to SQL database"),
-            },
-            connection_string
-        );
 
         // Setup tables
         Migrator::up(&db, None)
@@ -214,8 +203,8 @@ impl From<event::Model> for Event {
         Self {
             id: value.id,
             name: value.name,
-            created_at: DateTime::<Utc>::from_utc(value.created_at, Utc),
-            visited_at: DateTime::<Utc>::from_utc(value.visited_at, Utc),
+            created_at: DateTime::<Utc>::from_naive_utc_and_offset(value.created_at, Utc),
+            visited_at: DateTime::<Utc>::from_naive_utc_and_offset(value.visited_at, Utc),
             times: serde_json::from_value(value.times).unwrap_or(vec![]),
             timezone: value.timezone,
         }
@@ -227,19 +216,19 @@ impl From<person::Model> for Person {
         Self {
             name: value.name,
             password_hash: value.password_hash,
-            created_at: DateTime::<Utc>::from_utc(value.created_at, Utc),
+            created_at: DateTime::<Utc>::from_naive_utc_and_offset(value.created_at, Utc),
             availability: serde_json::from_value(value.availability).unwrap_or(vec![]),
         }
     }
 }
 
-#[derive(Display, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub enum SqlAdaptorError {
+    #[error("database: {0}")]
     DbErr(DbErr),
+    #[error("transaction: {0}")]
     TransactionError(TransactionError<DbErr>),
 }
-
-impl Error for SqlAdaptorError {}
 
 impl From<DbErr> for SqlAdaptorError {
     fn from(value: DbErr) -> Self {
