@@ -11,7 +11,6 @@ use axum::{
 };
 use routes::*;
 use tokio::sync::Mutex;
-use tower_governor::{governor::GovernorConfigBuilder, GovernorLayer};
 use tower_http::{cors::CorsLayer, trace::TraceLayer};
 use tracing::Level;
 use utoipa::OpenApi;
@@ -58,35 +57,24 @@ async fn main() {
             .unwrap(),
         );
 
-    // Rate limiting configuration (using tower_governor)
-    // From the docs: Allows bursts with up to 20 requests and replenishes
-    // one element after 500ms, based on peer IP.
-    let governor_config = Box::new(
-        GovernorConfigBuilder::default()
-            .burst_size(20)
-            .finish()
-            .unwrap(),
-    );
-
     let app = Router::new()
         .merge(SwaggerUi::new("/docs").url("/docs/openapi.json", ApiDoc::openapi()))
         .route("/", get(get_root))
         .route("/stats", get(stats::get_stats))
         .route("/event", post(event::create_event))
-        .route("/event/:event_id", get(event::get_event))
-        .route("/event/:event_id/people", get(person::get_people))
+        .route("/event/{event_id}", get(event::get_event))
+        .route("/event/{event_id}/people", get(person::get_people))
         .route(
-            "/event/:event_id/people/:person_name",
+            "/event/{event_id}/people/{person_name}",
             get(person::get_person),
         )
         .route(
-            "/event/:event_id/people/:person_name",
+            "/event/{event_id}/people/{person_name}",
             patch(person::update_person),
         )
         .route("/tasks/cleanup", get(tasks::cleanup))
         .with_state(shared_state)
         .layer(cors)
-        .layer(GovernorLayer::new(governor_config))
         .layer(TraceLayer::new_for_http());
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
