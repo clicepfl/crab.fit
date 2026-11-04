@@ -12,7 +12,7 @@ services:
 
   frontend:
     container_name: frontend
-    image: node:18-alpine
+    image: node:26-alpine
     working_dir: /app
     user: 1000:1000
     volumes:
