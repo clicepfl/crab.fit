@@ -55,7 +55,7 @@ const get = async <S extends z.Schema>(url: string, schema: S, auth?: string, ne
   })
     .catch(console.warn)
   if (!res?.ok) throw res
-  return schema.parse(await res.json())
+  return schema.parse(await res.json()) as ReturnType<S["parse"]>
 }
 
 const post = async <S extends z.Schema>(url: string, schema: S, input: unknown, auth?: string, method = 'POST'): Promise<ReturnType<S['parse']>> => {
@@ -69,7 +69,7 @@ const post = async <S extends z.Schema>(url: string, schema: S, input: unknown, 
   })
     .catch(console.warn)
   if (!res?.ok) throw res
-  return schema.parse(await res.json())
+  return schema.parse(await res.json()) as ReturnType<S["parse"]>
 }
 
 // Get

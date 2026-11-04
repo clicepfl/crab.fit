@@ -32,7 +32,7 @@ const Weekdays = ({ value, onChange }: WeekdaysProps) => {
   }, [])
 
   const startPos = useRef(0)
-  const mode = useRef<'add' | 'remove'>()
+  const mode = useRef<'add' | 'remove' | null>(null)
 
   const handleFinishSelection = useCallback(() => {
     if (mode.current === 'add') {
@@ -40,7 +40,7 @@ const Weekdays = ({ value, onChange }: WeekdaysProps) => {
     } else {
       onChange(value.filter(d => !selectingRef.current.includes(d)))
     }
-    mode.current = undefined
+    mode.current = null
   }, [value])
 
   return <div className={styles.grid}>

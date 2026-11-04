@@ -14,11 +14,11 @@ import EventAvailabilities from './EventAvailabilities'
 import styles from './page.module.scss'
 
 interface PageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 export const generateMetadata = async ({ params }: PageProps): Promise<Metadata> => {
-  const event = await getEvent(params.id).catch(() => undefined)
+  const event = await getEvent((await params).id).catch(() => undefined)
   const { t } = await useTranslation('event')
 
   return {
@@ -27,7 +27,7 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
 }
 
 const Page = async ({ params }: PageProps) => {
-  const event = await getEvent(params.id).catch(() => undefined)
+  const event = await getEvent((await params).id).catch(() => undefined)
   if (!event) notFound()
 
   const { t, i18n } = await useTranslation(['common', 'event'])
