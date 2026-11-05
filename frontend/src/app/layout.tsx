@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   },
   keywords: ['crab', 'fit', 'crabfit', 'schedule', 'availability', 'availabilities', 'when2meet', 'doodle', 'meet', 'plan', 'time', 'timezone'],
   description: 'Enter your availability to find a time that works for everyone!',
-  themeColor: '#F79E00',
   manifest: 'manifest.json',
   openGraph: {
     title: 'Crab Fit',
@@ -50,3 +49,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
 }
 
 export default RootLayout
+
+export const viewport = {
+  themeColor: '#F79E00'
+};

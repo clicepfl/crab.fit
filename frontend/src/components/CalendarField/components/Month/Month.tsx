@@ -35,7 +35,7 @@ const Month = ({ value, onChange }: MonthProps) => {
   }, [])
 
   const startPos = useRef({ x: 0, y: 0 })
-  const mode = useRef<'add' | 'remove'>()
+  const mode = useRef<'add' | 'remove' | null>(null)
 
   // Is 1 or more of the selected dates in the past?
   const hasPastDates = useMemo(() => value
@@ -49,7 +49,7 @@ const Month = ({ value, onChange }: MonthProps) => {
     } else {
       onChange(value.filter(d => !selectingRef.current.includes(d)))
     }
-    mode.current = undefined
+    mode.current = null
   }, [value])
 
   return <>

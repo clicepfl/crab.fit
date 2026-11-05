@@ -38,7 +38,7 @@ const EventAvailabilities = ({ event }: EventAvailabilitiesProps) => {
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone)
 
   // Web worker for calculating the heatmap table
-  const tableWorker = useRef<Worker>()
+  const tableWorker = useRef<Worker | null>(null)
 
   // Calculate table (using a web worker if available)
   const [table, setTable] = useState<ReturnType<typeof calculateTable>>()
@@ -46,7 +46,7 @@ const EventAvailabilities = ({ event }: EventAvailabilitiesProps) => {
   useEffect(() => {
     if (event && expandTimes.length > 0) {
       if (!tableWorker.current) {
-        tableWorker.current = window.Worker ? new Worker(new URL('/src/workers/calculateTable', import.meta.url)) : undefined
+        tableWorker.current = window.Worker ? new Worker(new URL('/src/workers/calculateTable', import.meta.url)) : null
       }
       const args = { times: expandedTimes, locale: i18n.language, timeFormat, timezone }
       if (tableWorker.current) {
