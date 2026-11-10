@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { isKeyOfObject } from '@giraugh/tools'
 import { maps } from 'hue-map'
-import { MapKey } from 'hue-map/dist/maps'
 import { Settings as SettingsIcon } from 'lucide-react'
 
 import SelectField from '/src/components/SelectField/SelectField'
@@ -23,7 +22,7 @@ const Settings = () => {
 
   const store = useStore(useSettingsStore, state => state)
 
-  const modalRef = useRef<HTMLDialogElement>(null)
+  const modalRef = useRef<HTMLDialogElement | null>(null)
   const [isOpen, _setIsOpen] = useState(false)
   const setIsOpen = useCallback((shouldOpen: boolean) => {
     if (shouldOpen) {
@@ -115,7 +114,7 @@ const Settings = () => {
             }}
             isSmall
             value={store.colormap}
-            onChange={event => store.setColormap(event.target.value as MapKey)}
+            onChange={event => store.setColormap(event.target.value)}
           />
 
           <ToggleField

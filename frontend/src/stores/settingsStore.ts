@@ -1,9 +1,11 @@
-import { MapKey } from 'hue-map/dist/maps'
+import { maps } from 'hue-map'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type TimeFormat = '12h' | '24h'
 type Theme = 'System' | 'Light' | 'Dark'
+
+export type MapKey = any
 
 interface SettingsStore {
   /** 0: Sunday, 1: Monday */

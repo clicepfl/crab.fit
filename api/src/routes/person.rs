@@ -1,10 +1,26 @@
+use std::convert::Infallible;
+
 use axum::{
-    extract::{self, Path},
-    headers::{authorization::Bearer, Authorization},
-    Json, TypedHeader,
+    extract::{self, FromRequestParts, Path},
+    http::request::Parts,
+    Json,
 };
+use axum_auth::{AuthBearer, AuthBearerCustom};
 use base64::{engine::general_purpose, Engine};
 use common::{Adaptor, Person};
+
+pub struct OptionalBearer(Option<AuthBearer>);
+
+impl<B> FromRequestParts<B> for OptionalBearer
+where
+    B: Send + Sync,
+{
+    type Rejection = Infallible;
+
+    async fn from_request_parts(req: &mut Parts, _: &B) -> Result<Self, Self::Rejection> {
+        Ok(Self(AuthBearer::decode_request_parts(req).ok()))
+    }
+}
 
 use crate::{
     errors::ApiError,
@@ -76,7 +92,7 @@ pub async fn get_people<A: Adaptor>(
 pub async fn get_person<A: Adaptor>(
     extract::State(state): State<A>,
     Path((event_id, person_name)): Path<(String, String)>,
-    bearer: Option<TypedHeader<Authorization<Bearer>>>,
+    bearer: OptionalBearer,
 ) -> ApiResult<PersonResponse, A> {
     let adaptor = &state.lock().await.adaptor;
 
@@ -161,7 +177,7 @@ pub async fn get_person<A: Adaptor>(
 pub async fn update_person<A: Adaptor>(
     extract::State(state): State<A>,
     Path((event_id, person_name)): Path<(String, String)>,
-    bearer: Option<TypedHeader<Authorization<Bearer>>>,
+    bearer: OptionalBearer,
     Json(input): Json<PersonInput>,
 ) -> ApiResult<PersonResponse, A> {
     let adaptor = &state.lock().await.adaptor;
@@ -206,14 +222,10 @@ pub async fn update_person<A: Adaptor>(
     ))
 }
 
-pub fn parse_password(bearer: Option<TypedHeader<Authorization<Bearer>>>) -> Option<String> {
-    bearer.map(|TypedHeader(Authorization(b))| {
-        String::from_utf8(
-            general_purpose::STANDARD
-                .decode(b.token().trim())
-                .unwrap_or(vec![]),
-        )
-        .unwrap_or("".to_owned())
+pub fn parse_password(bearer: OptionalBearer) -> Option<String> {
+    bearer.0.map(|AuthBearer(b)| {
+        String::from_utf8(general_purpose::STANDARD.decode(b.trim()).unwrap_or(vec![]))
+            .unwrap_or("".to_owned())
     })
 }
 

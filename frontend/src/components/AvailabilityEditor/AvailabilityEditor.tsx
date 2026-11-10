@@ -33,7 +33,7 @@ const AvailabilityEditor = ({ eventId, times, timezone, value = [], onChange, ta
   }, [])
 
   const startPos = useRef({ x: 0, y: 0 })
-  const mode = useRef<'add' | 'remove'>()
+  const mode = useRef<'add' | 'remove' | null>(null)
 
   // Create the colour palette
   const palette = usePalette(2)
@@ -145,7 +145,7 @@ const AvailabilityEditor = ({ eventId, times, timezone, value = [], onChange, ta
                           onChange(value.filter(t => !selectingRef.current.includes(t)))
                         }
                         setSelecting([])
-                        mode.current = undefined
+                        mode.current = null
                       }, { once: true })
                     }}
                     onPointerEnter={() => {

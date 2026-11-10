@@ -8,10 +8,10 @@ const PATTERN = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'A
 const API_URL = 'https://us-central1-flour-app-services.cloudfunctions.net/charliAPI?v='
 
 const Egg = () => {
-  const ref = useRef<HTMLDialogElement>(null)
+  const ref = useRef<HTMLDialogElement | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [patternCompletion, setPatternCompletion] = useState(0)
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState<string | null>(null)
   const [key, setKey] = useState(0)
 
   const keyHandler = useCallback((e: KeyboardEvent) => {
@@ -41,18 +41,24 @@ const Egg = () => {
   return <dialog
     onClick={e => {
       e.currentTarget.close()
-      setUrl('')
+      setUrl(null)
     }}
     className={styles.modal}
     ref={ref}
   >
-    <img
-      className={styles.image}
-      src={url}
-      alt="A cute picture of Charli"
-      onLoadStart={() => setIsLoading(true)}
-      onLoad={() => setIsLoading(false)}
-    />
+    {
+      url ? (
+        <img
+          className={styles.image}
+          src={url}
+          alt="A cute picture of Charli"
+          onLoadStart={() => setIsLoading(true)}
+          onLoad={() => setIsLoading(false)}
+        />
+      ) : (
+        <></>
+      )
+    }
     {isLoading && <div className={styles.loader} />}
   </dialog>
 }
